@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private Button buttonStartThread;
+    private volatile Boolean stopThread = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,11 +24,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void stopThread(View view) {
+        stopThread = true;
     }
 
     public void startThread(View view) {
+        stopThread = false;
 //        new ExampleThread(10).start(); /*------Method 1------*/
         new Thread(new ExammpleRunnable(10)).start(); /*------Method 2------*/
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                for (int i = 0; i < 10; i++) {
+//                    if (i == 5) {
+//                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                buttonStartThread.setText("50%");
+//                            }
+//                        });
+//
+//                    }
+//                    Log.d(TAG, "startThread: " + i);
+//                    try {
+//                        Thread.sleep(1000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }).start();
     }
 
     /**
@@ -77,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             for (int i = 0; i < seconds; i++) {
+                if (stopThread) return;
                 if (i == 5) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
@@ -84,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
                             buttonStartThread.setText("50%");
                         }
                     });
-
                 }
                 Log.d(TAG, "startThread: " + i);
                 try {
