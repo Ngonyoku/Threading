@@ -3,16 +3,23 @@ package com.rickprojects.threading;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+
+    private Button buttonStartThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        buttonStartThread = findViewById(R.id.btn_start_thread);
     }
 
     public void stopThread(View view) {
@@ -70,6 +77,15 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             for (int i = 0; i < seconds; i++) {
+                if (i == 5) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            buttonStartThread.setText("50%");
+                        }
+                    });
+
+                }
                 Log.d(TAG, "startThread: " + i);
                 try {
                     Thread.sleep(1000);
